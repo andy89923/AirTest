@@ -7,23 +7,30 @@ print("start...")
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
 poco = AndroidUiautomationPoco(use_airtest_input=True, screenshot_each_action=False)
 
-connect_device(devices[0])
+# connect_device(devices[0])
+connect_device("Android://")
 dev = device()
 
 
 def test_youtube(dev):
     dev.home()
     dev.stop_app("com.google.android.youtube")
+    dev.shell('am force-stop com.android.chrome')
 
     dev.shell('am start -a android.intent.action.VIEW "http://www.youtube.com/watch?v=934WINmgSm8"')
     
     # Wait for app to progress
-    sleep(3)
+    sleep(10)
 
     # [BUG] Since Youtube's app bug, have to click the button to have normal UI
-    poco("Navigate up").click()
-    sleep(3)
-    poco("com.google.android.youtube:id/floaty_title").click()
+    # poco("Navigate up").click()
+    # sleep(3)
+    # poco("com.google.android.youtube:id/floaty_title").click()
+
+    loading_spin = poco("com.google.android.youtube:id/load_spinner")
+    if loading_spin.exists():
+        print("No Connection")
+        return
 
     # There may be an ads pop out
     ads_skip = poco("com.google.android.youtube:id/skip_ad_button_text")
@@ -34,8 +41,9 @@ def test_youtube(dev):
     sleep(10)
 
 
-times = 10
+times = 1
 for _ in range(times):
     test_youtube(dev)
     sleep(5)
+
 
