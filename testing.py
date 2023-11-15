@@ -1,4 +1,4 @@
-from src import AndroidApp, test_web_browser
+from src import test_web_browser, test_video_play
 from src import testcase
 
 import sys
@@ -7,11 +7,10 @@ import argparse
 from MyLogging import ColoredFormatter
 import logging
 
-
 from airtest.core.api import *
 
 logger = None
-def init_logger(log_file):
+def init_logger(log_file, level):
     global logger
 
     airtest_logger = logging.getLogger('airtest')
@@ -19,7 +18,7 @@ def init_logger(log_file):
     airtest_logger.propagate = False
 
     logger = logging.getLogger('Saviah')
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(level)
 
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(ColoredFormatter("%(levelname)s: %(message)s"))
@@ -37,40 +36,55 @@ def init_logger(log_file):
 
 def main_testing(device, poco, times=-1):
     global logger
-
-    logger.warning("Start Ultimate Testing")
+    
+    logger.info("Main Testing")
+    
+    if times == -1:
+        logger.warning("Start Ultimate Testing")
     counter = 1
     while True:
         logger.info(f"Testing counter: {counter}")
         
         
-        logger.info("WebBrowserTesting")
+        logger.debug("WebBrowserTesting")
         test_web_browser(device, poco, testcase.webBrowser_testcases)
         
+        logger.debug("YT Video Testing")
+        test_video_play(device, poco, testcase.video_testcases)
 
         logger.info(f"End of testing round {counter}.")
         if counter == times:
             break
         counter += 1
 
-    logger.warning("End of Testing")
+    logger.info("End of Testing")
 
 
+USAGE_INFO = "[Saviah_UX_Testing]\n"
+USAGE_INFO += "[USAGE] testing.py [-h] [--log LOG] [--device DEVICE [DEVICE ...]]"
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="[Usage]")
+    parser = argparse.ArgumentParser(description=USAGE_INFO)
 
-    parser.add_argument("--log", "-l", default=None, help="Log file")
     parser.add_argument("--device", nargs="+", help="Connected Device")
+    parser.add_argument("--log", "-l", default=None, help="Log file")
+    parser.add_argument("--level", default=logging.INFO, help="Log Level")
+    parser.add_argument("--round", "-r", default=10, help="Testing Round")
     args = parser.parse_args()
 
     devices = args.device
     log_file = args.log
+    log_level = int(args.level)
+    round = int(args.round)
 
-    init_logger(log_file)
+    init_logger(log_file, log_level)
     logger.info('Start Saviah UX Testing')
-    logger.info(f'Number of Devices: {len(devices)}')
     
+    if devices == None:
+        logger.error(USAGE_INFO)
+        exit(1)
+        
+    logger.info(f'Number of Devices: {len(devices)}')
     if len(devices) > 1:
         logger.warning("Only support one devices(ver 0.1)")
 
@@ -85,4 +99,4 @@ if __name__ == "__main__":
     from poco.drivers.android.uiautomation import AndroidUiautomationPoco
     poco = AndroidUiautomationPoco(use_airtest_input=True, screenshot_each_action=False)
 
-    main_testing(now_dev, poco, 2)
+    main_testing(now_dev, poco, round)
