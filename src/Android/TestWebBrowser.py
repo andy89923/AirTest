@@ -38,7 +38,7 @@ def test_web_browser(device, poco, testcases):
             assert_exists(target, "Target not exist")
             logger.debug("Pass")
         except Exception as e:
-            logger.error("Can't found target template on {url}", exc_info=True)
+            logger.error(f"Can't found target template on {url}", exc_info=True)
         device.home()
     logger.info("Done")
 
