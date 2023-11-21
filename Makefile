@@ -1,5 +1,6 @@
 
 install: requirement.txt
+	pip install wheel
 	pip install -r requirement.txt
 
 ROUND=50
