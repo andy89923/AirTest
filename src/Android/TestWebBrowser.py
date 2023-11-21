@@ -21,7 +21,8 @@ def test_web_browser(device, poco, testcases):
     CHROME_APP = AndroidApp.chrome.value
 
     logger = logging.getLogger('Saviah.WebTesting')
-
+    logger.info("WebBrowserTesting")
+    
     device.shell(f'am force-stop {CHROME_APP}')    
     try:
         close_all_tabs(device, poco)
@@ -39,5 +40,5 @@ def test_web_browser(device, poco, testcases):
         except Exception as e:
             logger.error("Can't found target template on {url}", exc_info=True)
         device.home()
-
+    logger.info("Done")
 

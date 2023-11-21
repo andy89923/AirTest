@@ -17,7 +17,8 @@ def test_video_play(device, poco, testcase, loading_time=5):
     YT_APP = AndroidApp.youtube.value
     
     logger = logging.getLogger('Saviah.VideoTesting')
-   
+    logger.info("YT Video Testing")
+    
     for url, time in testcase:
         logger.debug(f"Testing on {url}") 
         
@@ -34,7 +35,7 @@ def test_video_play(device, poco, testcase, loading_time=5):
 
         loading_spin = poco("com.google.android.youtube:id/load_spinner")
         if loading_spin.exists():
-            logger.error("Lost connection when testing on Video Streaming. {url}")
+            logger.error(f"Lost connection when testing on Video Streaming. {url}")
             sleep(time)
             continue
 
@@ -46,4 +47,5 @@ def test_video_play(device, poco, testcase, loading_time=5):
         
         # Video playing time
         sleep(time)
-
+    close_yt(device)
+    logger.info("Done")
