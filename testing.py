@@ -40,12 +40,12 @@ def generate_random_sequence(n=TEST_CASE_NUM):
     random_sequence = random.sample(range(1, n + 1), n)
     return random_sequence
 
+NETWORK_USE = "DATA" # "DATA"
+
 def main_testing(device, poco, control, seq, times=-1):
     global logger
     
     logger.info("Main Testing")
-    # control.data_on()
-    control.wifi_on()
     
     if times == -1:
         logger.warning("Start Ultimate Testing")
@@ -60,6 +60,9 @@ def main_testing(device, poco, control, seq, times=-1):
         
         logger.info(f"Testcase seq = {test_seq}")
         for i in test_seq:
+            if NETWORK_USE == "WIFI": control.wifi_on()
+            if NETWORK_USE == "DATA": control.data_on()
+            
             if i == 1:
                 test_web_browser(device, poco, testcase.webBrowser_testcases)
             elif i == 2:
@@ -93,6 +96,7 @@ if __name__ == "__main__":
     parser.add_argument("--level", default=logging.INFO, help="Log Level")
     parser.add_argument("--round", "-r", default=10, help="Testing Round")
     parser.add_argument("--seq", "-s", nargs="+", default=None, help="Testing Sequence")
+    parser.add_argument("--data", "-d", default="DATA", help="Testing Sequence")
     args = parser.parse_args()
 
     devices = args.device
@@ -111,7 +115,12 @@ if __name__ == "__main__":
     if devices == None:
         logger.error(USAGE_INFO)
         exit(1)
-        
+    
+    if args.data != None and args.data == "WIFI":
+        NETWORK_USE = "WIFI"
+    
+    logger.info(f'Network use: {NETWORK_USE}')
+    
     logger.info(f'Number of Devices: {len(devices)}')
     if len(devices) > 1:
         logger.warning("Only support one devices(ver 0.1)")

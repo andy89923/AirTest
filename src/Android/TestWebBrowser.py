@@ -40,5 +40,11 @@ def test_web_browser(device, poco, testcases):
         except Exception as e:
             logger.error(f"Can't found target template on {url}", exc_info=True)
         device.home()
+    
+    try:
+        close_all_tabs(device, poco)
+    except Exception as e:
+        logger.error(f'Cannot close web browser tabs.', exc_info=True)
+    
     logger.info("Done")
 

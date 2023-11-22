@@ -5,6 +5,7 @@ install: requirement.txt
 
 ROUND=50
 SEQ := 1 2 3 4 5
+NETWORK=DATA
 
 # ROUND set to 0 for infinite test
 # 1 -> test_web_browser
@@ -14,10 +15,10 @@ SEQ := 1 2 3 4 5
 # 5 -> data 
 
 run:
-	python testing.py --device Android:// --log $(shell date +'%Y%m%d-%H%M').log -r $(ROUND) -s $(SEQ)
+	python testing.py --device Android:// --log log/$(shell date +'%Y%m%d-%H%M').log -r $(ROUND) -s $(SEQ) -d $(NETWORK)
 
 rand:
-	python testing.py --device Android:// --log $(shell date +'%Y%m%d-%H%M').log -r $(ROUND)
+	python testing.py --device Android:// --log log/$(shell date +'%Y%m%d-%H%M').log -r $(ROUND) -d $(NETWORK)
 
 DEBUG=10
 INFO=20
@@ -26,4 +27,4 @@ ERROR=40
 FATAL=50
 
 test:
-	python testing.py --device Android:// --log test.log --level $(DEBUG) -r 1 -s $(SEQ)
+	python testing.py --device Android:// --log log/test.log --level $(DEBUG) -r 1 -s $(SEQ) -d $(NETWORK)
